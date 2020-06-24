@@ -8,8 +8,8 @@ CREATE TABLE employee(
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
   role_id INT,
-  manager_id INT,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  FOREIGN KEY (role_id) REFERENCES employee_role(id)
 );
 
 CREATE TABLE employee_role(
@@ -17,7 +17,8 @@ id INT NOT NULL AUTO_INCREMENT,
 title VARCHAR(30) NOT NULL,
 salary DECIMAL,
 department_id INT,
-PRIMARY KEY (id)
+PRIMARY KEY (id),
+FOREIGN KEY (department_id) REFERENCES department(id)
 );
 
 CREATE TABLE department(
@@ -27,19 +28,19 @@ PRIMARY KEY (id)
 );
 
 
-NSERT INTO role (title, salary, department_id) values ('Sales Lead', 100000, 1);
-INSERT INTO role (title, salary, department_id) values ('Sales Person', 80000, 1);
-INSERT INTO role (title, salary, department_id) values ('Lead Engineer', 200000, 2);
-INSERT INTO role (title, salary, department_id) values ('Software Engineer', 150000, 2);
-INSERT INTO role (title, salary, department_id) values ('Accounting Lead', 170000, 3),
-INSERT INTO role (title, salary, department_id) values ('Accountant', 125000, 3);
-INSERT INTO role (title, salary, department_id) values ('Legal Team Lead', 150000, 4);
-INSERT INTO role (title, salary, department_id) values ('Lawyer', 125000, 4);
+INSERT INTO employee_role (title, salary, department_id) values ('Sales Lead', 110000,);
+INSERT INTO employee_role (title, salary, department_id) values ('Sales Person', 60000, 1);
+INSERT INTO employee_role (title, salary, department_id) values ('Lead Engineer', 210000, 2);
+INSERT INTO employee_role (title, salary, department_id) values ('Software Engineer', 150000, 2);
+INSERT INTO employee_role (title, salary, department_id) values ('Accounting Lead', 110000, 3),
+INSERT INTO employee_role (title, salary, department_id) values ('Accountant', 60000, 3);
+INSERT INTO employee_role (title, salary, department_id) values ('Legal Team Lead', 250000, 4);
+INSERT INTO employee_role (title, salary, department_id) values ('Lawyer', 125000, 4);
 
-UPDATE `employee_DB`.`employee` SET `role` = 'Sales Lead' WHERE (`id` = '8');
-UPDATE `employee_DB`.`employee` SET `role` = 'Sales Person' WHERE (`id` = '7');
-UPDATE `employee_DB`.`employee` SET `role` = 'Lead Engineer' WHERE (`id` = '6');
-UPDATE `employee_DB`.`employee` SET `role` = 'Software Engineer' WHERE (`id` = '5');
-UPDATE `employee_DB`.`employee` SET `role` = 'Accounting Lead' WHERE (`id` = '4');
-UPDATE `employee_DB`.`employee` SET `role` = 'Accountant' WHERE (`id` = '3');
-UPDATE `employee_DB`.`employee` SET `role` = 'Legal Team Lead' WHERE (`id` = '2');
+UPDATE `employee_DB`.`employee` SET `title` = 'Sales Lead' WHERE (`id` = '8');
+UPDATE `employee_DB`.`employee` SET `title` = 'Sales Person' WHERE (`id` = '7');
+UPDATE `employee_DB`.`employee` SET `title` = 'Lead Engineer' WHERE (`id` = '6');
+UPDATE `employee_DB`.`employee` SET `title` = 'Software Engineer' WHERE (`id` = '5');
+UPDATE `employee_DB`.`employee` SET `title` = 'Accounting Lead' WHERE (`id` = '4');
+UPDATE `employee_DB`.`employee` SET `title` = 'Accountant' WHERE (`id` = '3');
+UPDATE `employee_DB`.`employee` SET `title` = 'Legal Team Lead' WHERE (`id` = '2');

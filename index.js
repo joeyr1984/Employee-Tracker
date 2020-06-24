@@ -118,10 +118,9 @@ function addEmployee() {
   ];
   inquirer.prompt(newEmployee).then(function (response) {
     connection.query("SELECT * FROM employee_role", function (err, results) {
+      if (err) throw err;
       for (let index = 0; index < results.length; index++) {
         roleList.push(results[index].title);
-        //console.log(roleList);
-
       }
       inquirer.prompt({
         type: "list",
@@ -129,10 +128,16 @@ function addEmployee() {
         choices: roleList,
         name: "newRole"
       }).then(function (userInput) {
-        let query = "INSERT INTO employee (first_name, last_name, title) VALUES ('" + response.firstName + "', '" + response.lastName + "', '" + userInput.newRole + "')";
-        connection.query(query, function (err, results) {
-          console.log("One new Employee added");
-          displayMenu();
+        let roleId;
+        connection.query("SELECT * FROM employee_role WHERE title = '" + userInput.newRole + "'", function (err, results) {
+          if (err) throw err;
+          roleId = results[0].id;
+          let query = "INSERT INTO employee (first_name, last_name, role_id) VALUES ('" + response.firstName + "', '" + response.lastName + "', '" + roleId + "')";
+          connection.query(query, function (err, results) {
+            if (err) throw err;
+            console.log("One new Employee added");
+            displayMenu();
+          })
         })
       })
     });
@@ -156,6 +161,7 @@ function updateEmployeeRoles() {
     }
   ];
   connection.query("SELECT * FROM employee_role", function (err, results) {
+    if (err) throw err;
     for (let index = 0; index < results.length; index++) {
       roles.push(results[index].title);
     }
@@ -163,19 +169,23 @@ function updateEmployeeRoles() {
 
   })
   connection.query("SELECT * FROM employee", function (err, results) {
+    if (err) throw err;
     for (let index = 0; index < results.length; index++) {
       employee.push(results[index].first_name + " " + results[index].last_name);
       //console.log(employee);
     }
     inquirer.prompt(updateEmployee).then(function (response) {
       const name = response.employeeChange.split(" ");
-      console.log(name);
-      let query = "UPDATE employee SET title = '" + response.roleChange + "' WHERE first_name = '" + name[0] + "' AND last_name = '" + name[1] + "'";
-      connection.query(query, function (err, results) {
-        console.log(results.affectedRows + "record(s) updated");
-        displayMenu();
+      let roleId;
+      connection.query("SELECT * FROM employee_role WHERE title = '" + response.roleChange + "'", function (err, results) {
+        if (err) throw err;
+        roleId = results[0].id;
+        let query = "UPDATE employee SET role_id = '" + roleId + "' WHERE first_name = '" + name[0] + "' AND last_name = '" + name[1] + "'";
+        connection.query(query, function (err, results) {
+          console.log(results.affectedRows + "record(s) updated");
+          displayMenu();
+        })
       })
     })
-  })
- 
-}
+
+  })}
