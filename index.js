@@ -121,7 +121,7 @@ function addEmployee() {
       for (let index = 0; index < results.length; index++) {
         roleList.push(results[index].title);
         //console.log(roleList);
-        
+
       }
       inquirer.prompt({
         type: "list",
@@ -130,11 +130,52 @@ function addEmployee() {
         name: "newRole"
       }).then(function (userInput) {
         let query = "INSERT INTO employee (first_name, last_name, title) VALUES ('" + response.firstName + "', '" + response.lastName + "', '" + userInput.newRole + "')";
-      connection.query(query, function (err, results) {
-        console.log("One new Employee added");
-        displayMenu();
-      })
+        connection.query(query, function (err, results) {
+          console.log("One new Employee added");
+          displayMenu();
+        })
       })
     });
   });
+}
+function updateEmployeeRoles() {
+  const employee = [];
+  const roles = [];
+  const updateEmployee = [
+    {
+      type: "list",
+      message: "Which Employee would you like to update?",
+      choices: employee,
+      name: "employeeChange"
+    },
+    {
+      type: "list",
+      message: "What is their new role?",
+      choices: roles,
+      name: "roleChange"
+    }
+  ];
+  connection.query("SELECT * FROM employee_role", function (err, results) {
+    for (let index = 0; index < results.length; index++) {
+      roles.push(results[index].title);
+    }
+    //console.log(roles);
+
+  })
+  connection.query("SELECT * FROM employee", function (err, results) {
+    for (let index = 0; index < results.length; index++) {
+      employee.push(results[index].first_name + " " + results[index].last_name);
+      //console.log(employee);
+    }
+    inquirer.prompt(updateEmployee).then(function (response) {
+      const name = response.employeeChange.split(" ");
+      console.log(name);
+      let query = "UPDATE employee SET title = '" + response.roleChange + "' WHERE first_name = '" + name[0] + "' AND last_name = '" + name[1] + "'";
+      connection.query(query, function (err, results) {
+        console.log(results.affectedRows + "record(s) updated");
+        displayMenu();
+      })
+    })
+  })
+ 
 }
