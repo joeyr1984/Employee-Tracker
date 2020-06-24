@@ -81,3 +81,23 @@ function addDepartment() {
       })
   })
 }
+function addRole() {
+  inquirer.prompt({
+      type: "input",
+      message: "What Role do you want to add?",
+      name: "role"
+  }).then(function (answer) {
+    inquirer.prompt({
+      type: "input",
+      message: "What is the Salary for this Role?",
+      name: "salary"
+  }).then(function (response) {
+    let query = "INSERT INTO employee_role (title, salary) VALUES ('" + answer.role + "', '" + response.salary + "')"; 
+    connection.query(query,function (err, results) {
+        console.log("One new Role added");
+        displayMenu();
+    })
+  });
+    
+  })
+}
