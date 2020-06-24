@@ -53,12 +53,18 @@ function displayMenu() {
 function viewAllDepartments() {
   connection.query("SELECT * FROM department", function (err, results) {
     console.table(results);
-    displayMenu()
+    displayMenu();
   })
 }
 function viewAllRoles() {
   connection.query("SELECT * FROM employee_role", function (err, results) {
     console.table(results);
-    displayMenu()
+    displayMenu();
+  })
+} 
+function viewAllEmployees() {
+  connection.query("SELECT * FROM employee", function (err, results) {
+    console.table(results);
+    displayMenu();
   })
 }    
