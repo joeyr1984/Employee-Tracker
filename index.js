@@ -53,6 +53,7 @@ function displayMenu() {
 function viewAllDepartments() {
   connection.query("SELECT * FROM department", function (err, results) {
     console.table(results);
+
     displayMenu();
   })
 }
@@ -61,43 +62,79 @@ function viewAllRoles() {
     console.table(results);
     displayMenu();
   })
-} 
+}
 function viewAllEmployees() {
   connection.query("SELECT * FROM employee", function (err, results) {
     console.table(results);
     displayMenu();
   })
-}    
+}
 function addDepartment() {
   inquirer.prompt({
-      type: "input",
-      message: "What Depatment do you want to add?",
-      name: "dept"
+    type: "input",
+    message: "What Depatment do you want to add?",
+    name: "dept"
   }).then(function (answer) {
-    let query = "INSERT INTO department (dept_name) VALUES ('" + answer.dept + "')"; 
-      connection.query(query,function (err, results) {
-          console.log("One new Department added");
-          displayMenu();
-      })
+    let query = "INSERT INTO department (dept_name) VALUES ('" + answer.dept + "')";
+    connection.query(query, function (err, results) {
+      console.log("One new Department added");
+      displayMenu();
+    })
   })
 }
 function addRole() {
   inquirer.prompt({
-      type: "input",
-      message: "What Role do you want to add?",
-      name: "role"
+    type: "input",
+    message: "What Role do you want to add?",
+    name: "role"
   }).then(function (answer) {
     inquirer.prompt({
       type: "input",
       message: "What is the Salary for this Role?",
       name: "salary"
-  }).then(function (response) {
-    let query = "INSERT INTO employee_role (title, salary) VALUES ('" + answer.role + "', '" + response.salary + "')"; 
-    connection.query(query,function (err, results) {
+    }).then(function (response) {
+      let query = "INSERT INTO employee_role (title, salary) VALUES ('" + answer.role + "', '" + response.salary + "')";
+      connection.query(query, function (err, results) {
         console.log("One new Role added");
         displayMenu();
-    })
-  });
-    
+      })
+    });
+
   })
+}
+function addEmployee() {
+  let roleList = [];
+  const newEmployee = [
+    {
+      type: "input",
+      message: "What is the First Name of the Employee?",
+      name: "firstName"
+    },
+    {
+      type: "input",
+      message: "What is the Last Name of the Employee?",
+      name: "lastName"
+    }
+  ];
+  inquirer.prompt(newEmployee).then(function (response) {
+    connection.query("SELECT * FROM employee_role", function (err, results) {
+      for (let index = 0; index < results.length; index++) {
+        roleList.push(results[index].title);
+        //console.log(roleList);
+        
+      }
+      inquirer.prompt({
+        type: "list",
+        message: "Please select a Role for this Employee",
+        choices: roleList,
+        name: "newRole"
+      }).then(function (userInput) {
+        let query = "INSERT INTO employee (first_name, last_name, title) VALUES ('" + response.firstName + "', '" + response.lastName + "', '" + userInput.newRole + "')";
+      connection.query(query, function (err, results) {
+        console.log("One new Employee added");
+        displayMenu();
+      })
+      })
+    });
+  });
 }
