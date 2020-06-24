@@ -68,3 +68,16 @@ function viewAllEmployees() {
     displayMenu();
   })
 }    
+function addDepartment() {
+  inquirer.prompt({
+      type: "input",
+      message: "What Depatment do you want to add?",
+      name: "dept"
+  }).then(function (answer) {
+    let query = "INSERT INTO department (dept_name) VALUES ('" + answer.dept + "')"; 
+      connection.query(query,function (err, results) {
+          console.log("One new Department added");
+          displayMenu();
+      })
+  })
+}
