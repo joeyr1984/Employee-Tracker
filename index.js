@@ -83,24 +83,48 @@ function addDepartment() {
   })
 }
 function addRole() {
-  inquirer.prompt({
-    type: "input",
-    message: "What Role do you want to add?",
-    name: "role"
-  }).then(function (answer) {
-    inquirer.prompt({
+  const departments = [];
+  let deptSqlResults;
+  connection.query("SELECT * FROM department", function (err, results) {
+    if (err) console.log(err);
+    deptSqlResults = results;
+    for (let index = 0; index < results.length; index++) {
+      departments.push(results[index].dept_name);
+    }
+  })
+  let prompts = [
+    {
+      type: "input",
+      message: "What Role do you want to add?",
+      name: "role"
+    },
+    {
       type: "input",
       message: "What is the Salary for this Role?",
       name: "salary"
-    }).then(function (response) {
-      let query = "INSERT INTO employee_role (title, salary) VALUES ('" + answer.role + "', '" + response.salary + "')";
-      connection.query(query, function (err, results) {
-        console.log("One new Role added");
-        displayMenu();
-      })
-    });
+    },
+    {
+      type: "list",
+      message: "Please select the department for this Role.",
+      choices: departments,
+      name: "selectDept"
+    }
+  ];
 
-  })
+  inquirer.prompt(prompts).then(function (response) {
+    const departmentObj = deptSqlResults.filter(record => {
+      return record.dept_name == response.selectDept;
+    })
+   
+    
+    let query = "INSERT INTO employee_role (title, salary, department_id) VALUES ('" + response.role + "', '" + response.salary + "', '" + departmentObj[0].id + "')";
+    connection.query(query, function (err, results) {
+      if (err) console.log(err);
+      console.log("One new Role added");
+      displayMenu();
+    })
+  });
+
 }
 function addEmployee() {
   let roleList = [];
@@ -188,4 +212,5 @@ function updateEmployeeRoles() {
       })
     })
 
-  })}
+  })
+}
